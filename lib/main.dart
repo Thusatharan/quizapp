@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import './quetion.dart';
+import './answer.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-    @override
+  @override
   State<StatefulWidget> createState() {
     return _MyAppState();
   }
@@ -16,16 +18,26 @@ class _MyAppState extends State<MyApp> {
 
   void _answerQuetion() {
     setState(() {
-      _questionIndex = _questionIndex+1;
+      _questionIndex = _questionIndex + 1;
     });
     print(_questionIndex);
   }
 
   @override
   build(BuildContext context) {
-    var quetions = [
-      'What is your favorite color?',
-      'What is your favorite animal?'
+    const quetions = [
+      {
+        'quetionText': 'What is your favourite color',
+        'answerText': ['Red', 'Black', 'Green', 'Blue'],
+      },
+      {
+        'quetionText': 'What is your pet animal',
+        'answerText': ['Dog', 'Cat', 'Parrot', 'Love Birds'],
+      },
+      {
+        'quetionText': 'What is your hobby',
+        'answerText': ['Reading Books', 'Gaming', 'Gardening', 'Cricket'],
+      },
     ];
     return MaterialApp(
       home: Scaffold(
@@ -34,23 +46,15 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: [
-            Text(quetions[_questionIndex]),
-            RaisedButton(
-              child: Text('Answer 1'),
-              onPressed: _answerQuetion,
+            Quetion(
+              quetions[_questionIndex]['quetionText'],
             ),
-            RaisedButton(
-              child: Text('Answer 2'),
-              onPressed: () {
-                print('Answer 2 is Choosen');
-              },
-            ),
-            RaisedButton(
-              child: Text('Answer 3'),
-              onPressed: () {
-                print('Answer 3 is choosen');
-              },
-            ),
+            ...(quetions[_questionIndex]['answerText'] as List<String>)  
+          //Three dots will take objects from the list and add to the parent list as individual object
+                .map((answer) {
+              return Answer(_answerQuetion, answer);
+            }).toList()
+            //as List<String> says that There is a list in the key
           ],
         ),
       ),
