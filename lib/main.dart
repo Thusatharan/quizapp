@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './quetion.dart';
-import './answer.dart';
+
+import 'quizpart.dart';
+import 'resultpart.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,9 +15,49 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _questionIndex = 0;
+  final _quetions = const [
+    {
+      'quetionText': 'What is your favourite color',
+      'answerText': [
+        {'choice': 'Red', 'score': 1},
+        {'choice': 'Black', 'score': 2},
+        {'choice': 'Green', 'score': 3},
+        {'choice': 'Blue', 'score': 4}
+      ],
+    },
+    {
+      'quetionText': 'What is your pet animal',
+      'answerText': [
+        {'choice': 'Dog', 'score': 4},
+        {'choice': 'Cat', 'score': 1},
+        {'choice': 'Parrot', 'score': 2},
+        {'choice': 'Love Birds', 'score': 3}
+      ],
+    },
+    {
+      'quetionText': 'What is your hobby',
+      'answerText': [
+        {'choice': 'Reading Books', 'score': 4},
+        {'choice': 'Gaming', 'score': 3},
+        {'choice': 'Gardening', 'score': 1},
+        {'choice': 'Cricket', 'score': 2}
+      ],
+    },
+  ];
 
-  void _answerQuetion() {
+  var _questionIndex = 0;
+  var _totalScore = 0;
+
+  void restart() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  void _answerQuetion(int score) {
+    _totalScore += score;
+
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -25,38 +66,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   build(BuildContext context) {
-    const quetions = [
-      {
-        'quetionText': 'What is your favourite color',
-        'answerText': ['Red', 'Black', 'Green', 'Blue'],
-      },
-      {
-        'quetionText': 'What is your pet animal',
-        'answerText': ['Dog', 'Cat', 'Parrot', 'Love Birds'],
-      },
-      {
-        'quetionText': 'What is your hobby',
-        'answerText': ['Reading Books', 'Gaming', 'Gardening', 'Cricket'],
-      },
-    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('Quiz Application'),
         ),
-        body: Column(
-          children: [
-            Quetion(
-              quetions[_questionIndex]['quetionText'],
-            ),
-            ...(quetions[_questionIndex]['answerText'] as List<String>)  
-          //Three dots will take objects from the list and add to the parent list as individual object
-                .map((answer) {
-              return Answer(_answerQuetion, answer);
-            }).toList()
-            //as List<String> says that There is a list in the key
-          ],
-        ),
+        body: _questionIndex < _quetions.length //This is if condition
+            ? Quiz(
+                answerQuetion: _answerQuetion,
+                questions: _quetions,
+                quetionIndex: _questionIndex,
+              )
+            : Result(_totalScore, restart),
       ),
     );
   }
